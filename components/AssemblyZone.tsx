@@ -77,19 +77,19 @@ const AssemblyZone: React.FC<AssemblyZoneProps> = ({ tokens, onRemove, onReorder
                 handleDrop(e, index);
               }}
               className={`
-                group flex items-center gap-2 px-3 py-2 rounded-md border transition-all cursor-move select-none shadow-sm
+                group flex items-center gap-2 px-3 py-2 rounded-md border transition-all cursor-move select-none shadow-sm max-w-[200px]
                 ${token.type === 'field' 
                   ? 'bg-blue-600 text-white border-blue-700 hover:bg-blue-700' 
                   : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400'}
                 hover:shadow-md transform active:scale-95
               `}
             >
-              <span className="text-sm font-bold tracking-wide">
+              <span className="text-sm font-bold tracking-wide truncate">
                 {token.type === 'field' ? token.value : (token.value === ' ' ? 'Espacio' : token.value)}
               </span>
               <button
                 onClick={(e) => { e.stopPropagation(); onRemove(token.id); }}
-                className="p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors"
+                className="p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors flex-shrink-0"
                 title="Eliminar"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [template, setTemplate] = useState<Token[]>([]);
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
+  const [customText, setCustomText] = useState('');
 
   const handleFileUpload = (excelData: ExcelData) => {
     setData(excelData);
@@ -19,11 +20,15 @@ const App: React.FC = () => {
   };
 
   const addToken = (type: TokenType, value: string, atIndex?: number) => {
+    if (type === 'symbol' && value === '' && customText.trim() === '') return;
+    
+    const tokenValue = value || customText;
     const newToken: Token = {
       id: Math.random().toString(36).substr(2, 9),
       type,
-      value
+      value: tokenValue
     };
+
     if (typeof atIndex === 'number') {
       const newTemplate = [...template];
       newTemplate.splice(atIndex, 0, newToken);
@@ -31,6 +36,8 @@ const App: React.FC = () => {
     } else {
       setTemplate(prev => [...prev, newToken]);
     }
+
+    if (!value) setCustomText(''); // Clear custom input if used
   };
 
   const removeToken = (id: string) => {
@@ -47,7 +54,6 @@ const App: React.FC = () => {
   const generatedText = useMemo(() => {
     if (!data || template.length === 0) return '';
     
-    // Process each row to generate text based on the template
     const rowsContent = data.rows.map(row => {
       return template.map(token => {
         if (token.type === 'field') {
@@ -70,14 +76,20 @@ const App: React.FC = () => {
     document.body.removeChild(element);
   };
 
-  // Drag handlers for source items
   const onDragStartSource = (e: React.DragEvent, type: TokenType, value: string) => {
     e.dataTransfer.setData('sourceType', type);
     e.dataTransfer.setData('sourceValue', value);
   };
 
+  const handleCustomTextSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (customText.trim()) {
+      addToken('symbol', customText);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
       <Header />
       
       <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl">
@@ -123,18 +135,38 @@ const App: React.FC = () => {
 
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h3 className="font-semibold text-slate-700 mb-4">Herramientas de Texto</h3>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2 mb-4">
                   {SYMBOLS.map(sym => (
                     <div
                       key={sym.label}
                       draggable
                       onDragStart={(e) => onDragStartSource(e, 'symbol', sym.value)}
                       onClick={() => addToken('symbol', sym.value)}
-                      className="px-3 py-2 bg-slate-50 text-slate-600 rounded-md border border-slate-200 text-sm hover:bg-slate-100 transition-colors text-center font-medium cursor-grab active:cursor-grabbing select-none"
+                      className="px-2 py-2 bg-slate-50 text-slate-600 rounded-md border border-slate-200 text-sm hover:bg-slate-100 transition-colors text-center font-medium cursor-grab active:cursor-grabbing select-none"
                     >
-                      {sym.label}
+                      {sym.label === ' ' ? '␣' : sym.label}
                     </div>
                   ))}
+                </div>
+                
+                <div className="pt-4 border-t border-slate-100">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Texto Personalizado</label>
+                  <form onSubmit={handleCustomTextSubmit} className="flex gap-2">
+                    <input 
+                      type="text"
+                      value={customText}
+                      onChange={(e) => setCustomText(e.target.value)}
+                      placeholder="Escribe algo..."
+                      className="flex-grow px-3 py-2 text-sm border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <button 
+                      type="submit"
+                      disabled={!customText.trim()}
+                      className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    >
+                      <PlusIcon />
+                    </button>
+                  </form>
                 </div>
               </div>
 
@@ -211,6 +243,10 @@ const App: React.FC = () => {
 
 const DownloadIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+);
+
+const PlusIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
 );
 
 export default App;
