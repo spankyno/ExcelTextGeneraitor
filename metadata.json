@@ -1,0 +1,5 @@
+{
+  "name": "Excel Text Generaitor",
+  "description": "A powerful tool to transform Excel and CSV data into custom-formatted text strings using an intuitive drag-and-drop interface.",
+  "requestFramePermissions": []
+}
