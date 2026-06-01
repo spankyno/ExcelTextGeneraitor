@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
               <strong>Contacto:</strong> <a href="mailto:blog.cottage627@passinbox.com" className="text-blue-600 hover:underline">blog.cottage627@passinbox.com</a>
             </p>
             <p className="text-slate-700">
-              <strong>Blog:</strong> <a href="https://aitorblog.infinityfreeapp.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://aitorblog.infinityfreeapp.com</a>
+              <strong>Blog:</strong> <a href="https://aitorsanchez.pages.dev/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://aitorsanchez.pages.dev/</a>
             </p>
           </div>
         </div>
